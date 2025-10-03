@@ -26,5 +26,25 @@
  import java.util.concurrent.Executors;
 
  public class MyHTTPServer {
+    private final int port;
+    private final File docRoot;
+    private final ExecutorService threadPool;
+    private volatile boolean isItrunning = true;
+    private final String serverName = "MyJavaHTTPServer/1.0";
 
+    /**
+     * MyHTTPSever
+     * Use: Contructor used to create a new MyHTTPServer object. Stores the port number, doc root
+     *      and creates a pool of worker threads so the server can handle many clients running.
+     * References: 
+     * 
+     * @param port
+     * @param docRoot
+     * @param numThreads
+     */
+    public MyHTTPServer(int port, File docRoot, int numThreads) {
+        this.port = port;
+        this.docRoot = docRoot;
+        this.threadPool = Executors.newFixedThreadPool(numThreads);
+    }
  }
