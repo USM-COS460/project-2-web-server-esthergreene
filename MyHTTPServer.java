@@ -25,11 +25,15 @@
  import java.util.concurrent.ExecutorService;
  import java.util.concurrent.Executors;
 
+ /**
+  * References:
+  * https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html
+  */
  public class MyHTTPServer {
     private final int port;
     private final File docRoot;
     private final ExecutorService threadPool;
-    private volatile boolean isItrunning = true;
+    private volatile boolean serverRunning = true;
     private final String serverName = "MyJavaHTTPServer/1.0";
 
     /**
@@ -37,7 +41,7 @@
      * Use: Contructor used to create a new MyHTTPServer object. Stores the port number, doc root
      *      and creates a pool of worker threads so the server can handle many clients running.
      * References: 
-     * 
+     * https://www.tutorialspoint.com/java_concurrency/concurrency_newfixedthreadpool.htm
      * @param port
      * @param docRoot
      * @param numThreads
@@ -46,5 +50,32 @@
         this.port = port;
         this.docRoot = docRoot;
         this.threadPool = Executors.newFixedThreadPool(numThreads);
+    }
+
+    /*
+     * start()
+     * Opens a door to the network for connection purposes. Waits for client to answer.
+     * Should keep running until the server is exited. 
+     * References:
+     * https://www.geeksforgeeks.org/java/file-getabsolutepath-method-in-java-with-examples/
+     * https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html
+     * https://www.geeksforgeeks.org/java/java-net-serversocket-class-in-java/
+     * https://docs.oracle.com/javase/8/docs/api/java/net/Socket.html
+     * https://www.geeksforgeeks.org/java/difference-between-executorservice-execute-and-submit-method-in-java/
+     * https://www.w3schools.com/java/ref_keyword_finally.asp
+     */
+    public void start() throws IOException {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Server started. Listening on port " + port + "...");
+            System.out.println("Document Root: " + docRoot.getAbsolutePath());
+            
+            while (serverRunning) {
+            Socket client = serverSocket.accept();
+            client.setSoTimeout(30_000);
+            threadPool.submit(new HTTPHandler(client, docRoot, serverName)); // won't work cuz doesn't exist yet. in theory.
+            } 
+        } finally {
+            stop(); // also won't work cuz doesn't exist yet. in theory.
+        }
     }
  }
