@@ -75,7 +75,18 @@
             threadPool.submit(new HTTPHandler(client, docRoot, serverName)); // won't work cuz doesn't exist yet. in theory.
             } 
         } finally {
-            stop(); // also won't work cuz doesn't exist yet. in theory.
+            stop(); 
         }
+    }
+
+    /**
+     * stop()
+     * Stops the server loop for accepting new clients and shuts down all worker threads. In case of any active handlers.
+     * References: 
+     * https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html
+     */
+    public void stop() {
+        serverRunning = false;
+        threadPool.shutdownNow();
     }
  }
