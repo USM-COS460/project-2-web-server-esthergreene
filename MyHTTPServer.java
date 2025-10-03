@@ -4,8 +4,8 @@
  * Project: Program 2
  * Version: 10/03/2025
  * Use: The main class used to start the web server. Reads port number and doc root
- * from the command line. Opens a ServerSocket to listen for incoming browser connections.
- * When a client connects it will hand the socket off to an HTTPHandler (eventually).
+ *  from the command line. Opens a ServerSocket to listen for incoming browser connections.
+ *  When a client connects it will hand the socket off to an HTTPHandler (eventually).
  * Note: Sources have been cited and appear above respective code (e.g., "References:")
  */
 
