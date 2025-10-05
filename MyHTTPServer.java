@@ -90,3 +90,12 @@
         threadPool.shutdownNow();
     }
  }
+
+ /**
+  * usage()
+  * Print statements on how to run the program from the command line. Shows the format and gives an example.
+  */
+ private static void usage() {
+    System.out.println("Usage: java MyHTTPServer <port> <document_root> [threads]");
+    System.out.println("Example: java MyHTTPServer 8080 ./www 50");
+ } // mostly for me, so I can remember how I set up my code HAHA
