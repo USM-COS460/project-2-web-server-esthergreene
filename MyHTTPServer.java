@@ -99,6 +99,71 @@
         System.out.println("Example: java MyHTTPServer 8080 ./www 50");
     } // mostly for me, so I can remember how I set up my code HAHA
 
+    /**
+     * main
+     * The classic main method. 
+     * Checks arguments to make sure the port and docRoot are given; calls usage() if not.
+     * Parses the port number to make sure it's valid (between 1 and 65535 = 2^16).
+     * Checks if docRoot exists. 
+     * Parses thread count, defaulting to 50 if not explicity listed.
+     * Creates the server, building an instance of an MyHTTPSerber object.
+     * Starts the server by calling the start() method. 
+     * References:
+     * https://www.geeksforgeeks.org/java/system-exit-in-java/
+     * https://www.w3schools.com/java/ref_string_length.asp
+     * https://www.tutorialspoint.com/java/number_parseint.htm
+     * https://www.geeksforgeeks.org/java/numberformatexception-in-java-with-examples/
+     * https://www.geeksforgeeks.org/java/difference-between-system-out-println-and-system-err-println-in-java/
+     * https://www.geeksforgeeks.org/java/file-exists-method-in-java-with-examples/
+     * https://www.geeksforgeeks.org/java/file-isdirectory-method-in-java-with-examples/
+     * https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html
+     * https://www.geeksforgeeks.org/java/throwable-getmessage-method-in-java-with-examples/
+     * https://www.geeksforgeeks.org/java/throwable-printstacktrace-method-in-java-with-examples/
+     * 
+     * @param args
+    */
+    public static void main(String[] args) {
+        if (args.length < 2) {
+            usage();
+            System.exit(1);
+        }
+
+        int port;
+        try {
+            port = Integer.parseInt(args[0]);
+            if (port < 1 || port > 65535) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid port: " + args[0]);
+            usage();
+            System.exit(1);
+            return;
+        }
+
+        File docRoot = new File(args[1]);
+        if (!docRoot.exists() || !docRoot.isDirectory()) {
+            System.err.println("Document root must be an existing directory: " + args[1]);
+        }
+
+        int threads = 50;
+        if (args.length >= 3) {
+            try {
+                threads = Integer.parseInt(args[2]);
+                if (threads <= 0) {
+                    threads = 50;
+                }
+            } catch (NumberFormatException ignored) {}
+        }
+
+        MyHTTPServer server = new MyHTTPServer(port, docRoot, threads);
+        try {
+            server.start();
+        } catch (IOException e) {
+            System.err.println("Server failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
  }
 
 
