@@ -342,7 +342,6 @@ public class HTTPHandler implements Runnable {
      * https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html
      * https://www.geeksforgeeks.org/java/java-string-format-method-with-examples/
      * https://www.geeksforgeeks.org/java/date-class-java-examples/
-     * 
      * @return
     */
     private static String rfc1123Date() { 
