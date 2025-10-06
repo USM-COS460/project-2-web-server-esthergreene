@@ -213,6 +213,17 @@ public class HTTPHandler implements Runnable {
 
 //
 
+    /**
+     * tryServeIndex()
+     * Used to handle requests to directories. Checks if the requested path IS a directory,
+     * then looks for "index.html" inside that directory to see if it exists. Finally, it 
+     * serbes the file if it exists by returning a File object so it can be sent to the browser.
+     * If it doesn't exists the method returns null which triggers a "404 Not Found" error response.
+     * References:
+     * https://www.geeksforgeeks.org/java/file-isfile-method-in-java-with-examples/
+     * @param dir
+     * @return
+    */
     private static boolean tryServeIndex(File dir) {
         if (!dir.exists() || !dir.isDirectory()) return false;
         File index = new File(dir, "index.html");
