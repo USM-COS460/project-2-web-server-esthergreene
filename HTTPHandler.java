@@ -266,25 +266,54 @@ public class HTTPHandler implements Runnable {
         out.flush();
     } 
 
-    //
-
+    /**
+     * sendFile()
+     * Used to send an actual file from a server to the browser. First it opens the
+     * file in an input stream to read the file's contents. Then, it determines the MIME type
+     * (eventually, not built yet). This checks the file extension and tells the browser how 
+     * to handle the file. It then wriptes the HTTP headers by sending the status line. Finally it sends the 
+     * data using BufferedOutputStream and reads the file in chunks, finishing out by flushing and closing the streams. 
+     * References:
+     * https://www.baeldung.com/java-file-mime-type
+     * https://www.geeksforgeeks.org/java/file-getname-method-in-java-with-examples/
+     * https://www.geeksforgeeks.org/java/java-io-fileinputstream-class-java/
+     * https://www.geeksforgeeks.org/java/reader-read-method-in-java-with-examples/
+     * @param out
+     * @param file
+     * @throws IOException
+    */
     private void sendFile(BufferedOutputStream out, File file) throws IOException {
-        String mime = MimeTypes.getMimeType(file.getName());
-        long length = file.length();
+        String mime = MimeTypes.getMimeType(file.getName()); // doesn't exist yet, theoretical.
+        long length = file.length(); 
         sendResponseHeaders(out, "200 OK", mime, length);
 
-        try (FileInputStream fis = new FileInputStream(file);
+        try (FileInputStream fis = new FileInputStream(file); 
              BufferedInputStream bis = new BufferedInputStream(fis)) {
             byte[] buffer = new byte[8192];
-            int r;
+            int r; 
             while ((r = bis.read(buffer)) != -1) {
-                out.write(buffer, 0, r);
+                out.write(buffer, 0, r); 
             }
             out.flush();
         }
     }
 
-    private void sendResponseHeaders(BufferedOutputStream out, String status, String contentType, long contentLength) throws IOException {
+    /**
+     * sendResponseHeaders()
+     * 
+     * References:
+     * 
+     * 
+     * 
+     * 
+     * 
+     * @param out
+     * @param status
+     * @param contentType
+     * @param contentLength
+     * @throws IOException
+    */
+    private void sendResponseHeaders(BufferedOutputStream out, String status, String contentType, long contentLength) throws IOException { //
         StringBuilder sb = new StringBuilder();
         sb.append("HTTP/1.1 ").append(status).append(CRLF);
         sb.append("Date: ").append(rfc1123Date()).append(CRLF);
