@@ -211,8 +211,6 @@ public class HTTPHandler implements Runnable {
         return new File(canonicalTarget);
     }
 
-//
-
     /**
      * tryServeIndex()
      * Used to handle requests to directories. Checks if the requested path IS a directory,
@@ -230,19 +228,45 @@ public class HTTPHandler implements Runnable {
         return index.exists() && index.isFile();
     }
 
+    /**
+     * sendNotFound()
+     * Used to tell the browser that the requested file does not exist. Does so by writing 
+     * to the HTTP status line that the server couldn't find the requested file. Then it sends
+     * the required HTTP headers. sends a message body, and finally flushes the close streams. 
+     * This means it ensures all data is sent to the browser and then closes the connection if needed. 
+     * References:
+     * https://www.geeksforgeeks.org/java/string-getbyte-method-in-java/
+     * https://www.geeksforgeeks.org/java/bufferedwriter-write-method-in-java-with-examples/
+     * https://www.geeksforgeeks.org/java/writer-flush-method-in-java-with-examples/
+     * @param out
+     * @throws IOException
+    */
     private void sendNotFound(BufferedOutputStream out) throws IOException {
         String body = "<html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1></body></html>";
-        sendResponseHeaders(out, "404 Not Found", "text/html; charset=utf-8", body.getBytes(StandardCharsets.UTF_8).length);
-        out.write(body.getBytes(StandardCharsets.UTF_8));
+        sendResponseHeaders(out, "404 Not Found", "text/html; charset=utf-8", body.getBytes(StandardCharsets.UTF_8).length); 
+        out.write(body.getBytes(StandardCharsets.UTF_8)); 
         out.flush();
     }
 
+    /**
+     * sendSimpleResponse
+     * A helper method used to send small, text-based HTTP responses (error messages, etc.)
+     * First it writes the HTTP status line, the standard headers, and the body. Then it flushes
+     * the stream, ensuring all headers and content are sent to the browser immediately. 
+     * @param out
+     * @param status
+     * @param contentType
+     * @param message
+     * @throws IOException
+    */
     private void sendSimpleResponse(BufferedOutputStream out, String status, String contentType, String message) throws IOException {
-        byte[] body = message.getBytes(StandardCharsets.UTF_8);
+        byte[] body = message.getBytes(StandardCharsets.UTF_8); 
         sendResponseHeaders(out, status, contentType + "; charset=utf-8", body.length);
         out.write(body);
         out.flush();
-    }
+    } 
+
+    //
 
     private void sendFile(BufferedOutputStream out, File file) throws IOException {
         String mime = MimeTypes.getMimeType(file.getName());
