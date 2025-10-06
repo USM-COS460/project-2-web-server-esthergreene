@@ -300,21 +300,24 @@ public class HTTPHandler implements Runnable {
 
     /**
      * sendResponseHeaders()
-     * 
+     * Builds and sends the HTTP headers before the file data is sent. Does this by
+     * sending the statis line and then adding required headers. The Date is the current server time. 
+     * The Server is the server name's string. Content Type tells the browser what find of file it is
+     * (html, css, etc.). Content Length is the number of bytes the browser should expect (to know
+     * when the file ends). It ends headers with a blank line (CRLF) and this signals to the browser
+     * that the headers are done, file/body to follow. In the end, the method returns the stream
+     * so that the file data can be written immediately after.
      * References:
-     * 
-     * 
-     * 
-     * 
-     * 
+     * https://docs.oracle.com/javase/8/docs/api/java/lang/StringBuilder.html
+     * https://www.geeksforgeeks.org/java/stringbuilder-append-method-in-java-with-examples/
      * @param out
      * @param status
      * @param contentType
      * @param contentLength
      * @throws IOException
     */
-    private void sendResponseHeaders(BufferedOutputStream out, String status, String contentType, long contentLength) throws IOException { //
-        StringBuilder sb = new StringBuilder();
+    private void sendResponseHeaders(BufferedOutputStream out, String status, String contentType, long contentLength) throws IOException { 
+        StringBuilder sb = new StringBuilder(); 
         sb.append("HTTP/1.1 ").append(status).append(CRLF);
         sb.append("Date: ").append(rfc1123Date()).append(CRLF);
         sb.append("Server: ").append(serverName).append(CRLF);
@@ -325,9 +328,26 @@ public class HTTPHandler implements Runnable {
         out.write(sb.toString().getBytes(StandardCharsets.ISO_8859_1));
     }
 
-    private static String rfc1123Date() {
-        SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-        df.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return df.format(new Date());
+    /**
+     * rfc1123Date()
+     * Generates the current date and time in the ecact format required by HTTP spec (RFC 1123).
+     * This took forever...
+     * Gets the current system time (with new Date()) and then uses the data formatter (RFC 1123)
+     * to always output in GMT/UTC timezone. It then returns the format as a string. 
+     * References:
+     * https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
+     * https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
+     * https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html
+     * https://stackoverflow.com/questions/2891361/how-to-set-time-zone-of-a-java-util-date
+     * https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html
+     * https://www.geeksforgeeks.org/java/java-string-format-method-with-examples/
+     * https://www.geeksforgeeks.org/java/date-class-java-examples/
+     * 
+     * @return
+    */
+    private static String rfc1123Date() { 
+        SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US); 
+        df.setTimeZone(TimeZone.getTimeZone("GMT")); 
+        return df.format(new Date()); 
     }
 }
