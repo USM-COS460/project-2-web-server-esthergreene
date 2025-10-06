@@ -176,26 +176,28 @@ public class HTTPHandler implements Runnable {
         }
     }
 
-    //
-
     /**
      * resolvePath()
-     * 
+     * Used to turn the URL path into a safe dile on disk while preventing
+     * directory traversal problems. It first combines the path with the docRoot,
+     * then gets the cononical path by converting the docRoot and the requested file
+     * to cononical paths. Then it conducts a security check by making sure the requested file's
+     * cononical path starts with the document root's cononical path. In the end, the method
+     * returns the safe file. It checks the passes and if the check fails, returns null ("404 Not Found").
      * References:
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
+     * https://www.w3schools.com/java/ref_string_startswith.asp
+     * https://www.geeksforgeeks.org/java/file-getcanonicalpath-method-in-java-with-examples/
      * @param root
      * @param path
      * @return
      * @throws IOException
     */
     private static File resolvePath(File root, String path) throws IOException {
-        if (path.startsWith("/")) path = path.substring(1);
-        File f = new File(root, path);
+        if (path.startsWith("/")) {
+             path = path.substring(1);
+        }
+
+        File f = new File(root, path); 
         String canonicalRoot = root.getCanonicalPath();
         String canonicalTarget;
         try {
@@ -208,6 +210,8 @@ public class HTTPHandler implements Runnable {
         }
         return new File(canonicalTarget);
     }
+
+//
 
     private static boolean tryServeIndex(File dir) {
         if (!dir.exists() || !dir.isDirectory()) return false;
